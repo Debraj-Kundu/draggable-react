@@ -28,6 +28,11 @@ import Items from "./Item";
 
 const data = [
   [
+    { rowId: "row-0", colId: "col-1", data: "Name" },
+    { rowId: "row-0", colId: "col-2", data: "Age" },
+    { rowId: "row-0", colId: "col-3", data: "Role" },
+  ],
+  [
     { rowId: "row-1", colId: "col-1", data: "Alice" },
     { rowId: "row-1", colId: "col-2", data: 25 },
     { rowId: "row-1", colId: "col-3", data: "Developer" },
@@ -42,6 +47,11 @@ const data = [
     { rowId: "row-3", colId: "col-2", data: 35 },
     { rowId: "row-3", colId: "col-3", data: "Manager" },
   ],
+  [
+    { rowId: "row-4", colId: "col-1", data: "Bruno" },
+    { rowId: "row-4", colId: "col-2", data: 45 },
+    { rowId: "row-4", colId: "col-3", data: "Boss" },
+  ],
 ];
 
 const Test = () => {
@@ -50,7 +60,7 @@ const Test = () => {
   const [columnHover, setColumnHover] = useState(false);
 
   const columnIds = ["col-1", "col-2", "col-3"];
-  const rowIds = ["row-1", "row-2", "row-3"];
+  const rowIds = ["row-1", "row-2", "row-3", "row-4"];
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -60,11 +70,64 @@ const Test = () => {
     })
   );
 
-  const handleDragStart = (e) => {};
+  const handleDragStart = (event) => {
+    const { active } = event;
+    const { id } = active;
+    setActiveId(id);
+  };
 
-  const handleDragMove = (e) => {};
+  const handleDragMove = (event) => {
+    const { active, over } = event;
+    // row swap
+    // if (
+    //   active.id.toString().includes("row") &&
+    //   active.id.toString().includes("row") &&
+    //   active &&
+    //   over &&
+    //   active.id !== over.id
+    // ) {
+    //   const activeRowIndex = containers.findIndex(
+    //     (row) => row[0].rowId === active.id
+    //   );
+    //   const overRowIndex = containers.findIndex(
+    //     (row) => row[0].rowId === over.id
+    //   );
+    //   console.log(activeRowIndex, overRowIndex);
+    //   let newItems = arrayMove(containers, activeRowIndex, overRowIndex);
+    //   console.log(newItems);
+    //   setContainers(newItems);
+    // }
 
-  const handleDragEnd = (e) => {};
+    //col swap
+  };
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    // row swap
+    if (
+      active.id.toString().includes("row") &&
+      active.id.toString().includes("row") &&
+      active &&
+      over &&
+      active.id !== over.id
+    ) {
+      const activeRowIndex = containers.findIndex(
+        (row) => row[0].rowId === active.id
+      );
+      const overRowIndex = containers.findIndex(
+        (row) => row[0].rowId === over.id
+      );
+      console.log(activeRowIndex, overRowIndex);
+      let newItems = arrayMove(containers, activeRowIndex, overRowIndex);
+      console.log(newItems);
+      setContainers(newItems);
+    }
+    setActiveId(null);
+  };
+
+  const handleHover = (isHovering) => {
+    setColumnHover(isHovering);
+  };
 
   return (
     <>
@@ -88,7 +151,12 @@ const Test = () => {
           }
         >
           {containers.map((row, i) => (
-            <div key={i} className="flex">
+            <div
+              key={i}
+              className="flex"
+              onMouseEnter={() => i === 0 && handleHover(true)}
+              onMouseLeave={() => i === 0 && handleHover(false)}
+            >
               {row.map((item) =>
                 columnHover ? (
                   <Items id={item.colId} val={item.data} />
