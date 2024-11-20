@@ -3,7 +3,7 @@ import { CSS } from "@dnd-kit/utilities";
 import clsx from "clsx";
 import React from "react";
 
-const Items = ({ id, val }) => {
+const Items = ({ id, val, type }) => {
   const {
     attributes,
     setNodeRef,
@@ -13,7 +13,7 @@ const Items = ({ id, val }) => {
     isDragging,
   } = useSortable({
     id,
-    data: { type: "item" },
+    data: { type },
   });
   return (
     <div
