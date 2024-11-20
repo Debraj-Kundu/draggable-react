@@ -17,7 +17,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { v4 as uuid4 } from "uuid";
 import {
@@ -53,13 +53,29 @@ const data = [
     { rowId: "row-4", colId: "col-3", data: "Boss" },
   ],
 ];
-const columnIds = ["col-1", "col-2", "col-3"];
-const rowIds = ["row-1", "row-2", "row-3", "row-4"];
+// const initCols = data[0].map((items) => items.colId);
+// const initRows = data.map((row) => row[0].rowId);
 
 const Test = () => {
-  const [containers, setContainers] = useState(data);
+  const memoizedData = useMemo(() => data, []); // Memoizing the static data
+
+  const initCols = useMemo(
+    () => memoizedData[0].map((item) => item.colId),
+    [memoizedData]
+  );
+  const initRows = useMemo(
+    () => memoizedData.map((row) => row[0].rowId),
+    [memoizedData]
+  );
+
+  const [containers, setContainers] = useState(memoizedData);
   const [activeId, setActiveId] = useState(null);
   const [columnHover, setColumnHover] = useState(false);
+  const [columnIds, setColumnIds] = useState(initCols); //["col-1", "col-2", "col-3"]
+  const [rowIds, setRowIds] = useState(initRows); //["row-1", "row-2", "row-3", "row-4"]
+
+  // console.log(columnIds, rowIds);
+  console.log('rerender')
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -98,6 +114,7 @@ const Test = () => {
       newCont = arrayMove(newCont, activeRowIndex, overRowIndex);
 
       setContainers(newCont);
+      setRowIds(newCont.map((row) => row[0].rowId));
     }
 
     // col swap
@@ -128,11 +145,12 @@ const Test = () => {
         }
       });
       console.log(activeColIndex, overColIndex);
-      const newItems = [...containers];
-      newItems.forEach((row, i) => {
-        newItems[i] = arrayMove(row, activeColIndex, overColIndex);
+      const newCont = [...containers];
+      newCont.forEach((row, i) => {
+        newCont[i] = arrayMove(row, activeColIndex, overColIndex);
       });
-      setContainers(newItems);
+      setContainers(newCont);
+      setColumnIds(newCont[0].map((items) => items.colId));
     }
     setActiveId(null);
   };
@@ -172,17 +190,27 @@ const Test = () => {
                     onMouseEnter={() => i === 0 && handleHover(true)}
                     onMouseLeave={() => i === 0 && handleHover(false)}
                   >
-                    {row.map((item) =>
+                    {row.map((item, i) =>
                       columnHover ? (
-                        <Items id={item.colId} val={item.data} type={"col"} />
+                        <Items
+                          key={i + item.colId}
+                          id={item.colId}
+                          val={item.data}
+                          type={"col"}
+                        />
                       ) : (
-                        <Items id={item.rowId} val={item.data} type={"row"} />
+                        <Items
+                          key={i + item.rowId}
+                          id={item.rowId}
+                          val={item.data}
+                          type={"row"}
+                        />
                       )
                     )}
                   </div>
                 ))}
               </SortableContext>
-              <DragOverlay>
+              {/* <DragOverlay>
                 {activeId
                   ? containers.map((row) => (
                       <div className={columnHover ? "" : "flex"}>
@@ -205,7 +233,7 @@ const Test = () => {
                       </div>
                     ))
                   : null}
-              </DragOverlay>
+              </DragOverlay> */}
             </DndContext>
           </div>
         </div>
