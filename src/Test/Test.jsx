@@ -79,24 +79,6 @@ const Test = () => {
   const handleDragMove = (event) => {
     const { active, over } = event;
     // row swap
-    // if (
-    //   active.id.toString().includes("row") &&
-    //   active.id.toString().includes("row") &&
-    //   active &&
-    //   over &&
-    //   active.id !== over.id
-    // ) {
-    //   const activeRowIndex = containers.findIndex(
-    //     (row) => row[0].rowId === active.id
-    //   );
-    //   const overRowIndex = containers.findIndex(
-    //     (row) => row[0].rowId === over.id
-    //   );
-    //   console.log(activeRowIndex, overRowIndex);
-    //   let newItems = arrayMove(containers, activeRowIndex, overRowIndex);
-    //   console.log(newItems);
-    //   setContainers(newItems);
-    // }
 
     //col swap
   };
@@ -111,16 +93,55 @@ const Test = () => {
       over &&
       active.id !== over.id
     ) {
-      const activeRowIndex = containers.findIndex(
-        (row) => row[0].rowId === active.id
-      );
-      const overRowIndex = containers.findIndex(
-        (row) => row[0].rowId === over.id
-      );
+      const activeRowIndex = containers.findIndex((row) => {
+        for (let i in row) {
+          if (active.id === row[i].rowId) return true;
+        }
+      });
+      const overRowIndex = containers.findIndex((row) => {
+        for (let i in row) {
+          if (over.id === row[i].rowId) return true;
+        }
+      });
       console.log(activeRowIndex, overRowIndex);
       let newItems = arrayMove(containers, activeRowIndex, overRowIndex);
       console.log(newItems);
       setContainers(newItems);
+    }
+
+    // col swap
+    else if (
+      active.id.toString().includes("col") &&
+      active.id.toString().includes("col") &&
+      active &&
+      over &&
+      active.id !== over.id
+    ) {
+      console.log(active.id, over.id);
+      let activeColIndex = -1;
+      containers.forEach((row) => {
+        for (let i in row) {
+          if (active.id === row[i].colId) {
+            activeColIndex = i;
+            break;
+          }
+        }
+      });
+      let overColIndex = -1;
+      containers.forEach((row) => {
+        for (let i in row) {
+          if (over.id === row[i].colId) {
+            overColIndex = i;
+            break;
+          }
+        }
+      });
+      console.log(activeColIndex, overColIndex);
+      const newItems = [...containers];
+      newItems.forEach((row, i) => {
+        newItems[i] = arrayMove(row, activeColIndex, overColIndex);
+      });
+      setContainers(newItems)
     }
     setActiveId(null);
   };
