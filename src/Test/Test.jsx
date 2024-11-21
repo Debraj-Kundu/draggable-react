@@ -74,9 +74,6 @@ const Test = () => {
   const [columnIds, setColumnIds] = useState(initCols); //["col-1", "col-2", "col-3"]
   const [rowIds, setRowIds] = useState(initRows); //["row-1", "row-2", "row-3", "row-4"]
 
-  // console.log(columnIds, rowIds);
-  console.log('rerender')
-
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(MouseSensor),
@@ -106,10 +103,15 @@ const Test = () => {
       const activeRowIndex = containers.findIndex((row) => {
         if (activeId === row[0].rowId) return true;
       });
-      const overRowIndex = containers.findIndex((row) => {
+      let overRowIndex = activeRowIndex;
+      overRowIndex = containers.findIndex((row) => {
         if (over.id === row[0].rowId) return true;
       });
-      console.log(activeRowIndex, overRowIndex);
+
+      overRowIndex = overRowIndex === 0 ? activeRowIndex : overRowIndex;
+      overRowIndex = overRowIndex === -1 ? activeRowIndex : overRowIndex;
+
+      
       let newCont = [...containers];
       newCont = arrayMove(newCont, activeRowIndex, overRowIndex);
 
@@ -135,7 +137,7 @@ const Test = () => {
           }
         }
       });
-      let overColIndex = -1;
+      let overColIndex = activeColIndex;
       containers.forEach((row) => {
         for (let i in row) {
           if (over.id === row[i].colId) {
@@ -144,7 +146,7 @@ const Test = () => {
           }
         }
       });
-      console.log(activeColIndex, overColIndex);
+      
       const newCont = [...containers];
       newCont.forEach((row, i) => {
         newCont[i] = arrayMove(row, activeColIndex, overColIndex);
@@ -161,7 +163,6 @@ const Test = () => {
 
   return (
     <>
-      {/* <button onClick={() => setColumnHover(!columnHover)}>Toggle</button> */}
       <div className="mx-auto max-w-7xl py-10">
         <div className="mt-10">
           <div className="">
