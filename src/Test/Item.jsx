@@ -21,10 +21,13 @@ const Items = ({ id, val, type }) => {
       ref={setNodeRef}
       {...attributes}
       style={{ transition, transform: CSS.Translate.toString(transform) }}
-      className={clsx(
-        "px-2 py-2 bg-white shadow-md rounded-xl w-full border border-transparent hover:border-gray-200 cursor-pointer",
-        isDragging && "opacity-50"
-      )}
+
+      className={
+        `m-1 px-2 py-2 shadow-md rounded-xl w-full border border-transparent border-2
+        ${isDragging ? "bg-gray-100" : "bg-white"}
+          
+        `
+      }
     >
       <div className="flex flex-center justify-between">
         {val}
