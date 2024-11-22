@@ -1,0 +1,49 @@
+.table-container {
+    width: 400px;
+    height: 300px;
+    overflow: auto;
+    border: 1px solid #ccc;
+  }
+  
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  thead{
+    position: sticky;
+  }
+  
+  th,
+  td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .sticky-col {
+    position: sticky;
+    left: 0;
+    background-color: #f9f9f9;
+    z-index: 1;
+  }
+  
+  .sticky-header {
+    top: 0;
+    background-color: #f1f1f1;
+    z-index: 2;
+  }
+  
+  .sticky-row td {
+    position: sticky;
+    top: 0;
+    background-color: #f1f1f1;
+    z-index: 1;
+  }
+  
+  button {
+    margin-left: 5px;
+    padding: 2px 5px;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+  
